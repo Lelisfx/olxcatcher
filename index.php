@@ -14,6 +14,7 @@
 		preg_match_all('/<h3 class="OLXad-list-title mb5px">([^<]++)/', $url, $col_itens);
 		preg_match_all('/<p class="text detail-category">([^<]++)/', $url, $col_cats);
 		preg_match_all('/<p class="OLXad-list-price">([^<]++)/', $url, $col_vals);
+		preg_match_all('/<a class="OLXad-list-link"([^<]++)/', $url, $col_links);
 		$i=0; ?>
 		<table>
 			<?php while($i<=50){
@@ -25,11 +26,16 @@
 			<tr>
 				<td><?php echo utf8_encode($col_itens[0][$i]) ;?></td>
 				<td>
-					<?php echo var_dump($col_cats[0][$i]);
-					//utf8_encode(
-						//str_replace('<h3 class="OLXad-list-title mb5px">','',$col_cats[0][$i])); ?>
+					<?php 
+					$categoria = str_replace('<p class="text detail-category">','',$col_cats[0][$i]); 
+					echo $categoria; ?>
 				</td>
 				<td><?php echo $valor; ?></td>
+				<td><?php 
+						preg_match('/href="([^<]++)/',$col_links[0][$i],$col_links2);
+						echo var_dump($col_links2); 
+					?>
+				</td>
 			</tr>
 			<?php	} $i++; } ?>
 		</table>
