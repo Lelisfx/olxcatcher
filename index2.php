@@ -10,7 +10,13 @@
 
 <body>
 	<?php
-		$input_lines = file_get_contents('http://sp.olx.com.br/regiao-de-sorocaba');
+
+		function file_get_contents_utf8($fn) {
+		     $content = file_get_contents($fn);
+		      return mb_convert_encoding($content, 'UTF-8',
+		          mb_detect_encoding($content, 'UTF-8, ISO-8859-1', true));
+		}
+		$input_lines = file_get_contents_utf8('http://sp.olx.com.br/regiao-de-sorocaba');
 		$input_lines = preg_replace("/[\r\n]*/", "", $input_lines);
 
 		preg_match_all("/class=\"section_OLXad-list.*?<\/ul><\/div>/", $input_lines, $group);
@@ -31,8 +37,8 @@ while($i<count($itens[0]))
 
 {
 
-
-				preg_match_all("/OLXad-list-price.*?([\d\.]+).*?<\/p>/", $itens[0][$i], $output_price);
+				$item = $itens[0][$i];
+				preg_match_all("/OLXad-list-price.*?([\d\.]+).*?<\/p>/", $item, $output_price);
 
 		//		$valor = (float)$valor_st;
 		//		if($valor <= 500)
@@ -47,15 +53,13 @@ while($i<count($itens[0]))
 					{
 						$valor_st = $output_price[1][0];
 						$valor_st = str_replace('.','',$valor_st);
-						$valor = (float)$valor_st;
-
-
-?>
+						$valor = (float)$valor_st; ?>
 
 </td>
 				<td>
 					<?php
-			echo $itens[0][$i]
+			preg_match("/<h3 class=\"OLXad-list-title mb5px\">(.*?)<\/h3>/", $item, $output_array);
+echo $output_array[1]
 ?>
 				</td>
 				<td>
@@ -70,8 +74,22 @@ echo $valor;
 				<td>
 
 <?php
+
+					preg_match("/<p class=\"text detail-category\">(.*?)<\/p>/", $item, $output_array);
+echo $output_array[1]
 //						preg_match('/href="([^<]++)/',$col_links[0][$i],$col_links2);
 	//					echo var_dump($col_links2);
+					?>
+				</td>
+
+				<td>
+
+			<?php
+
+					preg_match("/href=\"(http:\/\/.*?)\"/", $item, $output_array);
+			echo $output_array[1]
+			//						preg_match('/href="([^<]++)/',$col_links[0][$i],$col_links2);
+			//					echo var_dump($col_links2);
 					?>
 				</td>
 			</tr>
